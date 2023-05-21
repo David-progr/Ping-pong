@@ -1,11 +1,15 @@
 from pygame import *
 from random import randint
+from time import sleep
 font.init()
 font1 = font.SysFont('Arial', 70)
 font2 = font.SysFont('Arial', 20)
+lose1 = font1.render('Player 1 lose!', True, (0, 0, 0))
+lose2 = font1.render('Player 2 lose!', True, (0, 0, 0))
 #__________________________________________________________________________________________________________________________________
 bul = sprite.Group()
-
+lose_ball1 = 0
+lose_ball2 = 0
 win_width = 700
 win_height = 500
 window = display.set_mode((win_width, win_height))
@@ -68,15 +72,31 @@ while game:
         if sprite.collide_rect(play1, ball) or sprite.collide_rect(play2, ball):
             speed_x *= -1
             speed_y *= 1
-            count_ball += 1
-
         if ball.rect.y > win_height - 40 or ball.rect.y <= 0:
             speed_y *= -1
-        
         if ball.rect.x <= 0:
-            finish = True
+            lose_ball1 += 1
+            ball.rect.x = 340
+            ball.rect.y = 240
+            sleep(1)
+            speed_x *= -1
+            speed_y *= 1
         if ball.rect.x >= win_width - 40:
+            lose_ball2 += 1
+            ball.rect.x = 340
+            ball.rect.y = 240
+            sleep(1)
+            speed_x *= -1
+            speed_y *= 1
+        score1 = font2.render(f'Счет 1: {lose_ball2}', True, (0, 0, 0))
+        window.blit(score1,(0, 0))
+        score2 = font2.render(f'Счет 2: {lose_ball1}', True, (0, 0, 0))
+        window.blit(score2,(0, 20))
+        if lose_ball1 >= 5:
+            window.blit(lose1, (200, 200))
             finish = True
-
-    display.update()  
+        if lose_ball2 >= 5:
+            window.blit(lose2, (200, 200))
+            finish = True
+    display.update()
     clock.tick(FPS)
